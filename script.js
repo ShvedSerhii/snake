@@ -1,9 +1,9 @@
+const { fromEvent } = rxjs 
+
 const GAME_SPEED = 250;
 const CANVAS_BACKGROUND_COLOUR = "black";
 const SNAKE_COLOUR = "lightgreen";
-const SNAKE_BORDER_COLOUR = "darkgreen";
 const FOOD_COLOUR = "red";
-const FOOD_BORDER_COLOUR = "darkred";
 
 let snake = [
   { x: 150, y: 150 },
@@ -20,15 +20,22 @@ let foodY;
 let dx = 10;
 let dy = 0;
 
+const scoreboard = document.getElementById('score');
 const gameCanvas = document.getElementById("gameCanvas");
 const ctx = gameCanvas.getContext("2d");
 
 main();
 createFood();
-document.addEventListener("keydown", changeDirection);
+
+fromEvent(document, 'keydown').subscribe(
+    event => changeDirection(event)
+)
 
 function main() {
-  if (didGameEnd()) return;
+  if (didGameEnd()) {
+    scoreboard.innerHTML = 'GAME OVER'
+    return
+  };
   setTimeout(function onTick() {
     changingDirection = false;
     clearCanvas();
@@ -47,7 +54,6 @@ function clearCanvas() {
 
 function drawFood() {
   ctx.fillStyle = FOOD_COLOUR;
-  ctx.strokestyle = FOOD_BORDER_COLOUR;
   ctx.fillRect(foodX, foodY, 10, 10);
   ctx.strokeRect(foodX, foodY, 10, 10);
 }
@@ -58,7 +64,7 @@ function advanceSnake() {
   const didEatFood = snake[0].x === foodX && snake[0].y === foodY;
   if (didEatFood) {
     score += 1;
-    document.getElementById("score").innerHTML = score;
+    scoreboard.innerHTML = score;
     createFood();
   } else {
     snake.pop();
@@ -90,7 +96,6 @@ function drawSnake() {
 
 function drawSnakePart(snakePart) {
   ctx.fillStyle = SNAKE_COLOUR;
-  ctx.strokestyle = SNAKE_BORDER_COLOUR;
 
   if (snake[0].x < 0) snake[0].x = gameCanvas.width - 10;
   if (snake[0].x > gameCanvas.width - 10) snake[0].x = 0;
