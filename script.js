@@ -4,8 +4,12 @@ const GAME_SPEED = 250
 const CANVAS_BACKGROUND_COLOUR = 'black'
 const SNAKE_COLOUR = 'lightgreen'
 const FOOD_COLOUR = 'red'
+const LEFT_KEY = 37
+const RIGHT_KEY = 39
+const UP_KEY = 38
+const DOWN_KEY = 40
 
-let snake = [
+const snake = [
   { x: 150, y: 150 },
   { x: 140, y: 150 },
   { x: 130, y: 150 },
@@ -30,12 +34,12 @@ createFood()
 fromEvent(document, 'keydown').subscribe(event => changeDirection(event))
 
 function main() {
-  if (didGameEnd()) {
+  if (isGameEnd()) {
     scoreboard.innerHTML =
       'GAME OVER   </br> <span style="color:lightgreen; font-size: 50px">and happy New Year</span>'
     return
   }
-  setTimeout(function onTick() {
+  setTimeout(function() {
     changingDirection = false
     clearCanvas()
     drawFood()
@@ -70,7 +74,7 @@ function advanceSnake() {
   }
 }
 
-function didGameEnd() {
+function isGameEnd() {
   for (let i = 4; i < snake.length; i++) {
     if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true
   }
@@ -106,10 +110,6 @@ function drawSnakePart(snakePart) {
 }
 
 function changeDirection(event) {
-  const LEFT_KEY = 37
-  const RIGHT_KEY = 39
-  const UP_KEY = 38
-  const DOWN_KEY = 40
   if (changingDirection) return
   changingDirection = true
   const keyPressed = event.keyCode
